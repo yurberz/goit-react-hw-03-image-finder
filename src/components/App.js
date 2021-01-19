@@ -12,7 +12,6 @@ class App extends Component {
     page: 1,
     images: [],
     largeImageURL: "",
-    error: null,
     isLoading: false,
     showModal: false,
   };
@@ -35,23 +34,25 @@ class App extends Component {
   fetchImages = () => {
     const { searchQuery, page } = this.state;
 
-    this.setState({ isLoading: true });
+    if (searchQuery) {
+      this.setState({ isLoading: true });
 
-    fetchImagesWithQuery(searchQuery, page)
-      .then((images) =>
-        this.setState((prevState) => ({
-          images: [...prevState.images, ...images],
-          page: prevState.page + 1,
-        }))
-      )
-      .catch((error) =>
-        this.setState({ error: "Something went wrong. Try again." })
-      )
-      .finally(() => this.setState({ isLoading: false }));
+      fetchImagesWithQuery(searchQuery, page)
+        .then((images) =>
+          this.setState((prevState) => ({
+            images: [...prevState.images, ...images],
+            page: prevState.page + 1,
+          }))
+        )
+        .catch((error) => this.setState({ error }))
+        .finally(() => this.setState({ isLoading: false }));
+    }
   };
 
   handleSearchFormSubmit = (query) => {
-    this.setState({ searchQuery: query, page: 1, images: [] });
+    if (query) {
+      this.setState({ searchQuery: query, page: 1, images: [] });
+    }
   };
 
   onOpenModal = (evt) => {
@@ -79,16 +80,17 @@ class App extends Component {
       <>
         <SearchBar onSubmit={this.handleSearchFormSubmit} />
 
-        {images.length > 0 && (
-          <ImageGallery images={images} onOpenModal={this.onOpenModal} />
-        )}
+        <main>
+          {images.length > 0 && (
+            <ImageGallery images={images} onOpenModal={this.onOpenModal} />
+          )}
 
-        {images.length > 0 && !isLoading && (
-          <Button onLoadMore={this.fetchImages} />
-        )}
+          {images.length > 0 && !isLoading && (
+            <Button onLoadMore={this.fetchImages} />
+          )}
 
-        {isLoading && <Loader />}
-
+          {isLoading && <Loader />}
+        </main>
         {showModal && (
           <Modal
             onToggleModal={this.toggleModal}

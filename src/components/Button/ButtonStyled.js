@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Btn = styled.button`
+  display: block;
   margin-left: auto;
   margin-right: auto;
   padding: 8px 16px;

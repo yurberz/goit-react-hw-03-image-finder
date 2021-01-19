@@ -1,7 +1,7 @@
 import Btn from "./ButtonStyled";
 
-function Button({ onLoadMore }) {
+const Button = ({ onLoadMore }) => {
   return <Btn onClick={onLoadMore}>Load more</Btn>;
-}
+};
 
 export default Button;
